@@ -20,14 +20,19 @@ function calculateGrade() {
 
   let topExams = 0, halfExam = 0;
   let examPossible = 0;
+
   if (exams.length > 0) {
-    exams.sort((a, b) => b - a);
-    const topThree = exams.slice(0, 3);
-    examPossible += topThree.length * 100 * 1.5;
-    topExams = topThree.reduce((sum, score) => sum + score, 0) * 1.5;
-    if (exams.length > 3) {
-      halfExam = exams[3] * 0.5;
+    exams.sort((a, b) => a - b); // ascending to get the lowest
+    const lowest = exams[0];
+    const rest = exams.slice(1);
+
+    if (lowest !== undefined) {
+      halfExam = lowest * 0.5;
       examPossible += 50;
+    }
+    if (rest.length > 0) {
+      topExams = rest.reduce((sum, score) => sum + score, 0) * 1.5;
+      examPossible += rest.length * 100 * 1.5;
     }
   }
 
