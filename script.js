@@ -1,3 +1,4 @@
+
 // script.js
 
 function parseScore(value) {
@@ -19,38 +20,45 @@ function calculateGrade() {
   const exams = examInputs.map(parseScore).filter(v => v !== null);
 
   let topExams = 0, halfExam = 0;
+  let examPossible = 0;
   if (exams.length > 0) {
     exams.sort((a, b) => b - a);
-    topExams = exams.slice(0, 3).reduce((sum, score) => sum + score, 0) * 1.5;
+    const topThree = exams.slice(0, 3);
+    examPossible += topThree.length * 100 * 1.5;
+    topExams = topThree.reduce((sum, score) => sum + score, 0) * 1.5;
     if (exams.length > 3) {
       halfExam = exams[3] * 0.5;
+      examPossible += 50;
     }
   }
 
   const finalExamPts = finalExam !== null ? finalExam * 2 : 0;
+  const finalExamPossible = finalExam !== null ? 200 : 0;
 
-  function parseAssignment(id) {
-    return document.getElementById(id).value
+  function parseAssignment(id, sectionTotal) {
+    const values = document.getElementById(id).value
       .split(',')
       .map(v => parseScore(v))
       .filter(v => v !== null);
+    const sum = values.reduce((a, b) => a + b, 0);
+    const max = values.length * 10;
+    return {
+      earned: max > 0 ? (sum / max) * sectionTotal : 0,
+      possible: max > 0 ? sectionTotal : 0
+    };
   }
 
-  const quizzes = parseAssignment("quizzes");
-  const worksheets = parseAssignment("worksheets");
-  const homeworks = parseAssignment("homeworks");
+  const quiz = parseAssignment("quizzes", 50);
+  const worksheet = parseAssignment("worksheets", 20);
+  const homework = parseAssignment("homeworks", 30);
 
-  const quizPts = quizzes.length > 0 ? (quizzes.reduce((a, b) => a + b, 0) / (quizzes.length * 10)) * 50 : 0;
-  const worksheetPts = worksheets.length > 0 ? (worksheets.reduce((a, b) => a + b, 0) / (worksheets.length * 10)) * 20 : 0;
-  const homeworkPts = homeworks.length > 0 ? (homeworks.reduce((a, b) => a + b, 0) / (homeworks.length * 10)) * 30 : 0;
+  const earned = topExams + halfExam + finalExamPts + quiz.earned + worksheet.earned + homework.earned;
+  const possible = examPossible + finalExamPossible + quiz.possible + worksheet.possible + homework.possible;
 
-  const earned = topExams + halfExam + quizPts + worksheetPts + homeworkPts + finalExamPts;
-  const total = 650;
-
-  const grade = (earned / total) * 100;
+  const grade = possible > 0 ? (earned / possible) * 100 : 0;
 
   document.getElementById("result").innerHTML =
-    `Estimated Grade: <strong>${grade.toFixed(2)}%</strong><br>(${earned.toFixed(1)} out of 650 points)`;
+    `Estimated Grade: <strong>${grade.toFixed(2)}%</strong><br>(${earned.toFixed(1)} out of ${possible} possible points)`;
 }
 
 function saveInputs() {
