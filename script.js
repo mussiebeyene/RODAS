@@ -1,5 +1,3 @@
-// script.js
-
 function parseScore(value) {
   const lower = value.trim().toLowerCase();
   if (lower === "na" || lower === "") return null;
@@ -39,22 +37,22 @@ function calculateGrade() {
   const finalExamPts = finalExam !== null ? finalExam * 2 : 0;
   const finalExamPossible = finalExam !== null ? 200 : 0;
 
-  function parseAssignment(id, sectionTotal) {
+  function parseAssignment(id, sectionTotal, expectedCount) {
     const values = document.getElementById(id).value
       .split(',')
       .map(v => parseScore(v))
       .filter(v => v !== null);
     const sum = values.reduce((a, b) => a + b, 0);
-    const max = values.length * 10;
+    const actualTotal = values.length * 10;
     return {
-      earned: max > 0 ? (sum / max) * sectionTotal : 0,
-      possible: max > 0 ? sectionTotal : 0
+      earned: actualTotal > 0 ? (sum / actualTotal) * sectionTotal : 0,
+      possible: actualTotal > 0 ? sectionTotal : 0
     };
   }
 
-  const quiz = parseAssignment("quizzes", 50);
-  const worksheet = parseAssignment("worksheets", 20);
-  const homework = parseAssignment("homeworks", 30);
+  const quiz = parseAssignment("quizzes", 50, 4);
+  const worksheet = parseAssignment("worksheets", 20, 4);
+  const homework = parseAssignment("homeworks", 30, 4);
 
   const earned = topExams + halfExam + finalExamPts + quiz.earned + worksheet.earned + homework.earned;
   const possible = examPossible + finalExamPossible + quiz.possible + worksheet.possible + homework.possible;
