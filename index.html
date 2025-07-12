@@ -10,34 +10,45 @@
 <body>
   <div class="container">
     <h1>Grade Calculator</h1>
+    <p style="color: gray; font-size: 0.9em; margin-bottom: 15px;">
+      Enter <strong>NA</strong> (not case-sensitive) for any score you haven't received yet — it will be ignored in the calculation.
+    </p>
 
     <label>Exam 1 Score (out of 100):
-      <input type="number" id="exam1">
+      <input type="text" id="exam1">
     </label>
 
     <label>Exam 2 Score (out of 100):
-      <input type="number" id="exam2">
+      <input type="text" id="exam2">
     </label>
 
-    <label>Simulated Final Exam Score (out of 100):
-      <input type="number" id="finalExam">
+    <label>Exam 3 Score (out of 100):
+      <input type="text" id="exam3">
+    </label>
+
+    <label>Exam 4 Score (out of 100):
+      <input type="text" id="exam4">
+    </label>
+
+    <label>Final Exam Score (out of 100):
+      <input type="text" id="finalExam">
     </label>
 
     <label>Quiz Scores (comma separated, out of 10):
-      <input type="text" id="quizzes" placeholder="e.g., 9,10">
+      <input type="text" id="quizzes" placeholder="e.g., 9,10,NA">
     </label>
 
     <label>Worksheet Scores (comma separated, out of 10):
-      <input type="text" id="worksheets" placeholder="e.g., 8.5,9">
+      <input type="text" id="worksheets" placeholder="e.g., 8.5,9,NA">
     </label>
 
     <label>Online Homework Scores (comma separated, out of 10):
-      <input type="text" id="homeworks" placeholder="e.g., 10,10">
+      <input type="text" id="homeworks" placeholder="e.g., 10,10,NA">
     </label>
 
     <button onclick="calculateGrade()">Calculate Grade</button>
-    <button onclick="saveInputs()">💾 Save Inputs</button>
-    <button onclick="loadInputs()">📂 Load Saved Inputs</button>
+    <button onclick="saveInputs()">📂 Save Inputs</button>
+    <button onclick="loadInputs()">📁 Load Saved Inputs</button>
 
     <div id="result"></div>
   </div>
