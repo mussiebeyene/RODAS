@@ -6,15 +6,31 @@ function parseScore(value) {
 }
 
 function calculateGrade() {
-  const examInputs = [
+  const rawExamInputs = [
     document.getElementById("exam1").value,
     document.getElementById("exam2").value,
     document.getElementById("exam3").value,
     document.getElementById("exam4").value
   ];
-  const finalExam = parseScore(document.getElementById("finalExam").value);
 
-  const exams = examInputs.map(parseScore).filter(v => v !== null);
+  const finalExamRaw = document.getElementById("finalExam").value;
+  const finalExam = parseScore(finalExamRaw);
+
+  // Validate exam inputs
+  for (let i = 0; i < rawExamInputs.length; i++) {
+    const score = parseScore(rawExamInputs[i]);
+    if (score !== null && (score < 0 || score > 100)) {
+      alert(`Exam ${i + 1} must be between 0 and 100.`);
+      return;
+    }
+  }
+
+  if (finalExam !== null && (finalExam < 0 || finalExam > 100)) {
+    alert("Final Exam must be between 0 and 100.");
+    return;
+  }
+
+  const exams = rawExamInputs.map(parseScore).filter(v => v !== null);
 
   let topExams = 0, halfExam = 0;
   let examPossible = 0;
@@ -37,7 +53,7 @@ function calculateGrade() {
   const finalExamPts = finalExam !== null ? finalExam * 2 : 0;
   const finalExamPossible = finalExam !== null ? 200 : 0;
 
-  function parseAssignment(id, sectionTotal, expectedCount) {
+  function parseAssignment(id, sectionTotal) {
     const values = document.getElementById(id).value
       .split(',')
       .map(v => parseScore(v))
@@ -50,9 +66,9 @@ function calculateGrade() {
     };
   }
 
-  const quiz = parseAssignment("quizzes", 50, 4);
-  const worksheet = parseAssignment("worksheets", 20, 4);
-  const homework = parseAssignment("homeworks", 30, 4);
+  const quiz = parseAssignment("quizzes", 50);
+  const worksheet = parseAssignment("worksheets", 20);
+  const homework = parseAssignment("homeworks", 30);
 
   const earned = topExams + halfExam + finalExamPts + quiz.earned + worksheet.earned + homework.earned;
   const possible = examPossible + finalExamPossible + quiz.possible + worksheet.possible + homework.possible;
@@ -62,6 +78,7 @@ function calculateGrade() {
   document.getElementById("result").innerHTML =
     `Estimated Grade: <strong>${grade.toFixed(2)}%</strong><br>(${earned.toFixed(1)} out of ${possible.toFixed(1)} possible points)`;
 }
+
 
 function saveInputs() {
   const inputs = {
