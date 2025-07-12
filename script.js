@@ -1,23 +1,50 @@
+// script.js
+
+function parseScore(value) {
+  const lower = value.trim().toLowerCase();
+  if (lower === "na" || lower === "") return null;
+  const parsed = parseFloat(value);
+  return isNaN(parsed) ? null : parsed;
+}
+
 function calculateGrade() {
-  const exam1 = parseFloat(document.getElementById("exam1").value || 0);
-  const exam2 = parseFloat(document.getElementById("exam2").value || 0);
-  const finalExam = parseFloat(document.getElementById("finalExam").value || 0);
+  const examInputs = [
+    document.getElementById("exam1").value,
+    document.getElementById("exam2").value,
+    document.getElementById("exam3").value,
+    document.getElementById("exam4").value
+  ];
+  const finalExam = parseScore(document.getElementById("finalExam").value);
 
-  const quizzes = document.getElementById("quizzes").value.split(',').map(Number).filter(n => !isNaN(n));
-  const worksheets = document.getElementById("worksheets").value.split(',').map(Number).filter(n => !isNaN(n));
-  const homeworks = document.getElementById("homeworks").value.split(',').map(Number).filter(n => !isNaN(n));
+  const exams = examInputs.map(parseScore).filter(v => v !== null);
 
-  const examScores = [exam1, exam2].sort((a, b) => b - a);
-  const topExamPts = examScores.reduce((sum, val) => sum + val, 0) * 1.5;
-  const lowestExamPts = examScores.length >= 1 ? examScores[examScores.length - 1] / 2 : 0;
+  let topExams = 0, halfExam = 0;
+  if (exams.length > 0) {
+    exams.sort((a, b) => b - a);
+    topExams = exams.slice(0, 3).reduce((sum, score) => sum + score, 0) * 1.5;
+    if (exams.length > 3) {
+      halfExam = exams[3] * 0.5;
+    }
+  }
 
-  const finalExamPts = finalExam * 2;
+  const finalExamPts = finalExam !== null ? finalExam * 2 : 0;
 
-  const quizPts = (quizzes.reduce((a, b) => a + b, 0) / (quizzes.length * 10)) * 50;
-  const worksheetPts = (worksheets.reduce((a, b) => a + b, 0) / (worksheets.length * 10)) * 20;
-  const homeworkPts = (homeworks.reduce((a, b) => a + b, 0) / (homeworks.length * 10)) * 30;
+  function parseAssignment(id) {
+    return document.getElementById(id).value
+      .split(',')
+      .map(v => parseScore(v))
+      .filter(v => v !== null);
+  }
 
-  const earned = topExamPts + lowestExamPts + quizPts + worksheetPts + homeworkPts + finalExamPts;
+  const quizzes = parseAssignment("quizzes");
+  const worksheets = parseAssignment("worksheets");
+  const homeworks = parseAssignment("homeworks");
+
+  const quizPts = quizzes.length > 0 ? (quizzes.reduce((a, b) => a + b, 0) / (quizzes.length * 10)) * 50 : 0;
+  const worksheetPts = worksheets.length > 0 ? (worksheets.reduce((a, b) => a + b, 0) / (worksheets.length * 10)) * 20 : 0;
+  const homeworkPts = homeworks.length > 0 ? (homeworks.reduce((a, b) => a + b, 0) / (homeworks.length * 10)) * 30 : 0;
+
+  const earned = topExams + halfExam + quizPts + worksheetPts + homeworkPts + finalExamPts;
   const total = 650;
 
   const grade = (earned / total) * 100;
@@ -30,6 +57,8 @@ function saveInputs() {
   const inputs = {
     exam1: document.getElementById("exam1").value,
     exam2: document.getElementById("exam2").value,
+    exam3: document.getElementById("exam3").value,
+    exam4: document.getElementById("exam4").value,
     finalExam: document.getElementById("finalExam").value,
     quizzes: document.getElementById("quizzes").value,
     worksheets: document.getElementById("worksheets").value,
@@ -43,6 +72,8 @@ function loadInputs() {
   const inputs = JSON.parse(localStorage.getItem("gradeCalcInputs") || "{}");
   document.getElementById("exam1").value = inputs.exam1 || "";
   document.getElementById("exam2").value = inputs.exam2 || "";
+  document.getElementById("exam3").value = inputs.exam3 || "";
+  document.getElementById("exam4").value = inputs.exam4 || "";
   document.getElementById("finalExam").value = inputs.finalExam || "";
   document.getElementById("quizzes").value = inputs.quizzes || "";
   document.getElementById("worksheets").value = inputs.worksheets || "";
