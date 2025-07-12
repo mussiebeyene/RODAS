@@ -1,3 +1,13 @@
+body {
+  font-family: Arial, sans-serif;
+  background-image: url('IMG_5612.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  backdrop-filter: blur(8px);
+  color: #fff;
+  padding: 20px;
+}
 
 body {
   font-family: 'Segoe UI', sans-serif;
