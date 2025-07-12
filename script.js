@@ -12,7 +12,6 @@ function calculateGrade() {
     document.getElementById("exam3").value,
     document.getElementById("exam4").value
   ];
-
   const finalExamRaw = document.getElementById("finalExam").value;
   const finalExam = parseScore(finalExamRaw);
 
@@ -20,13 +19,12 @@ function calculateGrade() {
   for (let i = 0; i < rawExamInputs.length; i++) {
     const score = parseScore(rawExamInputs[i]);
     if (score !== null && (score < 0 || score > 100)) {
-      alert(`Exam ${i + 1} must be between 0 and 100.`);
+      alert(`Error: Exam ${i + 1} must be between 0 and 100.`);
       return;
     }
   }
-
   if (finalExam !== null && (finalExam < 0 || finalExam > 100)) {
-    alert("Final Exam must be between 0 and 100.");
+    alert("Error: Final Exam must be between 0 and 100.");
     return;
   }
 
@@ -36,7 +34,7 @@ function calculateGrade() {
   let examPossible = 0;
 
   if (exams.length > 0) {
-    exams.sort((a, b) => a - b); // ascending to get the lowest
+    exams.sort((a, b) => a - b);
     const lowest = exams[0];
     const rest = exams.slice(1);
 
@@ -78,6 +76,7 @@ function calculateGrade() {
   document.getElementById("result").innerHTML =
     `Estimated Grade: <strong>${grade.toFixed(2)}%</strong><br>(${earned.toFixed(1)} out of ${possible.toFixed(1)} possible points)`;
 }
+
 
 
 function saveInputs() {
